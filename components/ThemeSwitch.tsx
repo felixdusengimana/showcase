@@ -24,7 +24,7 @@ const ThemeSwitch = () => {
         id="theme"
         name="theme"
         checked={theme === 'dark'}
-        onChange={e => setTheme(e.target.checked ? 'dark' : 'light')}
+        onChange={e => setTheme(e.target.checked ? 'light' : 'dark')}
         hidden
       />
       
