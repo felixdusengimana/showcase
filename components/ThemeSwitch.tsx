@@ -23,7 +23,7 @@ const ThemeSwitch = () => {
         type="checkbox"
         id="theme"
         name="theme"
-        checked={theme === 'dark'}
+        checked={theme === 'light'}
         onChange={e => setTheme(e.target.checked ? 'light' : 'dark')}
         hidden
       />
