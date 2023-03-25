@@ -14,7 +14,7 @@ export default function Provider(props:ProviderProps) {
         'px-2 py-1 md:px-4 md:py-2 lg:px-8 lg:py-4',
         `text-sm`,
       )}>
-        <ThemeProvider enableSystem attribute="class">
+        <ThemeProvider defaultTheme="dark" enableSystem attribute="class">
             {children}
         </ThemeProvider>
       </div>
