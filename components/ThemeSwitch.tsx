@@ -30,10 +30,10 @@ const ThemeSwitch = () => {
       
       <div className='h-10 w-10 bg-whiteTheme dark:bg-darkTheme rounded-full shadow-sm flex items-center justify-center'>
           {
-            theme === 'dark' ? (
-              <div className='text-yellow-700'><DarkMode/></div>
-            ) : (
+            theme === 'light' ? (
               <div className='text-yellow-800'><LightMode/></div>
+              ) : (
+              <div className='text-yellow-700'><DarkMode/></div>
             )
           }
       </div>
