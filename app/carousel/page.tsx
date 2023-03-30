@@ -25,7 +25,7 @@ export default function Carousel() {
   return (
     <div>
       <h1 className=''>Single Component</h1>
-      <CarouselContainer >
+      <CarouselContainer autplay autplayInterval={500}>
         {randomImage10FromUnsplash.map((image, index) => (
           <CarouselItem key={index}>
              <div className="relative">
