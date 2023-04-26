@@ -19,6 +19,9 @@ interface FormValidateProps{
             customValidation?: (value: string)=>string[]
         }
     },
+    initialTouched?: {
+        [key: string]: boolean
+    } | "all",
 }
 
 export function useFormValidate(props?: FormValidateProps){
@@ -26,7 +29,7 @@ export function useFormValidate(props?: FormValidateProps){
     const [errors, seterrors] = useState<FormErrors>({})
     const formRef = useRef<HTMLFormElement>(null)
     
-    const inputChange = (event: ChangeEvent<HTMLInputElement>)=>{
+    const inputChange = (event: ChangeEvent<HTMLInputElement>|ChangeEvent<HTMLSelectElement>)=>{
         const {name, value, attributes} = event.target;
         setdata({...data, [name]: value})
         seterrors({...errors, [name]: {
@@ -107,31 +110,44 @@ export function useFormValidate(props?: FormValidateProps){
         return errors;
     }
 
+    const setInitialErrors = (name:string, value: string, attributes: NamedNodeMap)=>{
+        return {
+            errors: findInputErrors(attributes, value),
+            touched:  props?.initialTouched === "all" ? true :
+            props?.initialTouched?.[name] ? true: false
+        }
+    }
+
     useEffect(()=>{
       if(formRef.current){
         formRef.current.noValidate = true;
-        const inputs = formRef.current.querySelectorAll('input');
+        let inputs = formRef.current.querySelectorAll('input');
+        const select = formRef.current.querySelectorAll('select');
+
         const newErrors: FormErrors = {};
         inputs.forEach(input=>{
             const {name, value, attributes} = input;
-            newErrors[name] = {
-                errors: findInputErrors(attributes, value),
-                touched: false
-            }
+            newErrors[name] = setInitialErrors(name, value, attributes)
         })
+
+        select.forEach(input=>{
+            const {name, value, attributes} = input;
+            newErrors[name] = setInitialErrors(name, value, attributes)
+        })
+
         seterrors(newErrors);
       }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
-    const formHasError = Object.keys(errors).some(key=>errors[key].errors.length>0)
+    const isFormValid = Object.keys(errors).every(key=>errors[key].errors.length === 0)
 
     return {
         inputChange,
         errors,
         formRef,
         data,
-        formHasError
+        isFormValid
     }
 }
 

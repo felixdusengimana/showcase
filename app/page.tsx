@@ -2,10 +2,10 @@
 import { FormEvent } from "react"
 import   {useFormValidate} from "./hooks/useInputValidate"
 export default function Home() {
-  const {inputChange, data, errors, formRef, formHasError} = useFormValidate({
+  const {inputChange, data, errors, formRef, isFormValid} = useFormValidate({
     initialValues:  {
-      anotherName: 'Hi there',
-      number: 10,
+      anotherName: '',
+      number: 0,
       email: ''
     },
     validate: {
@@ -22,12 +22,13 @@ export default function Home() {
             return errors;
         },
       },
-    }
+    },
+    initialTouched: "all"
   });
   
   const handleSubmit = (e: FormEvent)=>{
     e.preventDefault();
-    if(!formHasError){
+    if(!isFormValid){
       alert('Form is valid')
     }else alert("for has errors")
   }
@@ -42,8 +43,17 @@ export default function Home() {
           <input type="number" name="number" required min={10} value={data.number} max={20} onChange={inputChange}/>
           <p>{errors?.number?.touched && errors?.number.errors.join('\n')}</p>
           <input type="email" name="email" required min={10} max={20} value={data.email} onChange={inputChange}/>
+          <p>{errors?.email?.touched && errors?.email.errors.join('\n')}</p>
           <input type="email" name="emaild" required={false} min={10} max={20} value={data.dadadada} onChange={inputChange}/>
-          <button type="submit" className="block bg-blue-400 py-3 disabled:bg-red-50" disabled={formHasError}>Save Data</button>
+          <p>{errors?.emaild?.touched && errors?.emaild.errors.join('\n')}</p>
+          <select name="select" defaultValue={""} onChange={inputChange} required>
+            <option value="" disabled>Select</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+          <p>{errors?.select?.touched && errors?.select.errors.join('\n')}</p>
+          <button type="submit" className="block bg-blue-400 py-3 disabled:bg-red-50" disabled={!isFormValid}>Save Data</button>
         </form>
         {JSON.stringify(errors)}
     </div>
