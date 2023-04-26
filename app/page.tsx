@@ -8,9 +8,19 @@ export default function Home() {
       number: 10,
       email: 'phelixdusengimana@gmail.com'
     },
-    customErrorMessages: {
+    validate: {
       anotherName: {
         required: 'Another name is required',
+        customValidation: (value) =>{
+            const errors = [];
+            if(value.length>10){
+                errors.push('Another name is too long')
+            }
+            if(value.includes('a')){
+              errors.push('Another name is too short')
+            }
+            return errors;
+        },
       },
     }
   });

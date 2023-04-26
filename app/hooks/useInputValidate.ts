@@ -13,9 +13,10 @@ export type FormErrors = {
 
 interface FormValidateProps{
     initialValues?: FormData,
-    customErrorMessages?: {
+    validate?: {
         [key: string]: {
-            [key: string]: string
+            [key: string]: any,
+            customValidation: (value: string)=>string[]
         }
     },
 }
@@ -47,6 +48,11 @@ export function useFormValidate(props?: FormValidateProps){
         const max = Number(attributes.getNamedItem('max')?.value);
         const pattern = attributes.getNamedItem('pattern')?.value;
 
+        if(props?.validate?.[name!]?.customValidation){
+            const customErrors = props?.validate?.[name!]?.customValidation(value);
+            errors.push(...customErrors)
+        }
+
         if(type === 'email' && required){
             const email = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
             if(!email.test(value)){
@@ -55,32 +61,32 @@ export function useFormValidate(props?: FormValidateProps){
         }
 
         if(required && !Boolean(value)){
-            if(props?.customErrorMessages?.[name!]?.required){
-                errors.push(props?.customErrorMessages?.[name!]?.required)
+            if(props?.validate?.[name!]?.required){
+                errors.push(props?.validate?.[name!]?.required)
             }else errors.push("this field is required")
         }
 
         if(minLength && value && value?.length < minLength){
-            if(props?.customErrorMessages?.[name!]?.maxLength){
-                errors.push(props?.customErrorMessages?.[name!]?.maxLength)
+            if(props?.validate?.[name!]?.maxLength){
+                errors.push(props?.validate?.[name!]?.maxLength)
             }else errors.push(`this field must be at least ${minLength} characters`)
         }
 
         if(maxLength && value && value?.length > maxLength){
-            if(props?.customErrorMessages?.[name!]?.maxLength){
-                errors.push(props?.customErrorMessages?.[name!]?.maxLength)
+            if(props?.validate?.[name!]?.maxLength){
+                errors.push(props?.validate?.[name!]?.maxLength)
             }else errors.push(`this field must be at most ${maxLength} chatacters`)
         }
 
         if(min && value && Number(value)<min){
-            if(props?.customErrorMessages?.[name!]?.min){
-                errors.push(props?.customErrorMessages?.[name!]?.min)
+            if(props?.validate?.[name!]?.min){
+                errors.push(props?.validate?.[name!]?.min)
             }else errors.push(`this field must be at least ${min}`)
         }
         
         if(max && value && Number(value)>max){
-            if(props?.customErrorMessages?.[name!]?.max){
-                errors.push(props?.customErrorMessages?.[name!]?.max)
+            if(props?.validate?.[name!]?.max){
+                errors.push(props?.validate?.[name!]?.max)
             }else errors.push(`this field must be at most ${min}`)
         }
 
