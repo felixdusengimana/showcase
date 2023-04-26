@@ -121,7 +121,6 @@ export function useFormValidate(props?: FormValidateProps){
 
     const formSubmit = ()=>{
         setisSubmitted(true);
-        alert("Submit")
     }
 
     useEffect(()=>{
