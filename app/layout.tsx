@@ -1,6 +1,4 @@
-import Navbar from '@/components/Navbar'
 import './globals.css'
-import Footer from '@/components/Footer'
 import Provider from './provider'
 
 export const metadata = {
@@ -17,13 +15,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className='min-h-screen dark:bg-darkTheme bg-whiteTheme'>
         <Provider>
-          <nav className="sticky top-4 z-50">
-          <Navbar/>
-          </nav>
-          <main className='mt-1 md:mt-2 lg:mt-3 flex-grow h-full bg-inherit'>
-            {children}
-          </main>
-          <Footer/>
+            <main className=''>
+              {children}
+            </main>
         </Provider>
       </body>
     </html>
