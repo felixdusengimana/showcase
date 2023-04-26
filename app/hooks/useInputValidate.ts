@@ -27,6 +27,7 @@ interface FormValidateProps{
 export function useFormValidate(props?: FormValidateProps){
     const [data, setdata] = useState<FormData>(props?.initialValues||{})
     const [errors, seterrors] = useState<FormErrors>({})
+    const [isSubmitted, setisSubmitted] = useState(false)
     const formRef = useRef<HTMLFormElement>(null)
     
     const inputChange = (event: ChangeEvent<HTMLInputElement>|ChangeEvent<HTMLSelectElement>)=>{
@@ -113,16 +114,22 @@ export function useFormValidate(props?: FormValidateProps){
     const setInitialErrors = (name:string, value: string, attributes: NamedNodeMap)=>{
         return {
             errors: findInputErrors(attributes, value),
-            touched:  props?.initialTouched === "all" ? true :
+            touched: isSubmitted? true: props?.initialTouched === "all" ? true :
             props?.initialTouched?.[name] ? true: false
         }
     }
 
+    const formSubmit = ()=>{
+        setisSubmitted(true);
+        alert("Submit")
+    }
+
     useEffect(()=>{
-      if(formRef.current){
-        formRef.current.noValidate = true;
-        let inputs = formRef.current.querySelectorAll('input');
-        const select = formRef.current.querySelectorAll('select');
+        if(formRef.current){
+        const currentForm = formRef.current;
+        currentForm.noValidate = true;
+        let inputs = currentForm.querySelectorAll('input');
+        const select = currentForm.querySelectorAll('select');
 
         const newErrors: FormErrors = {};
         inputs.forEach(input=>{
@@ -138,7 +145,7 @@ export function useFormValidate(props?: FormValidateProps){
         seterrors(newErrors);
       }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+    },[isSubmitted])
 
     const isFormValid = Object.keys(errors).every(key=>errors[key].errors.length === 0)
 
@@ -147,7 +154,8 @@ export function useFormValidate(props?: FormValidateProps){
         errors,
         formRef,
         data,
-        isFormValid
+        isFormValid,
+        formSubmit
     }
 }
 

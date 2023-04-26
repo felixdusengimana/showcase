@@ -2,7 +2,7 @@
 import { FormEvent } from "react"
 import   {useFormValidate} from "./hooks/useInputValidate"
 export default function Home() {
-  const {inputChange, data, errors, formRef, isFormValid} = useFormValidate({
+  const {inputChange, data, errors, formRef, isFormValid, formSubmit} = useFormValidate({
     initialValues:  {
       anotherName: '',
       number: 0,
@@ -23,12 +23,12 @@ export default function Home() {
         },
       },
     },
-    initialTouched: "all"
   });
   
   const handleSubmit = (e: FormEvent)=>{
     e.preventDefault();
-    if(!isFormValid){
+    formSubmit()
+    if(isFormValid){
       alert('Form is valid')
     }else alert("for has errors")
   }
@@ -36,7 +36,7 @@ export default function Home() {
   return (
     <div className="container p-7">
       <h1>Form Validate</h1>
-        <form className="flex flex-col gap-2" action="" onSubmit={handleSubmit} ref={formRef}>
+        <form className="flex flex-col gap-2" onSubmit={handleSubmit} ref={formRef}>
     
           <input type="text" required name="anotherName" value={data.anotherName} id="" onChange={inputChange}/>
           <p>{errors?.anotherName?.touched && errors?.anotherName.errors.join(' . ')}</p>
@@ -53,7 +53,7 @@ export default function Home() {
             <option value="3">3</option>
           </select>
           <p>{errors?.select?.touched && errors?.select.errors.join('\n')}</p>
-          <button type="submit" className="block bg-blue-400 py-3 disabled:bg-red-50" disabled={!isFormValid}>Save Data</button>
+          <button type="submit" className="block bg-blue-400 py-3 disabled:bg-red-50">Save Data</button>
         </form>
         {JSON.stringify(errors)}
     </div>
