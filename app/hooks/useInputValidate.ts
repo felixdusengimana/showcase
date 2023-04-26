@@ -16,7 +16,7 @@ interface FormValidateProps{
     validate?: {
         [key: string]: {
             [key: string]: any,
-            customValidation: (value: string)=>string[]
+            customValidation?: (value: string)=>string[]
         }
     },
 }
@@ -49,14 +49,21 @@ export function useFormValidate(props?: FormValidateProps){
         const pattern = attributes.getNamedItem('pattern')?.value;
 
         if(props?.validate?.[name!]?.customValidation){
-            const customErrors = props?.validate?.[name!]?.customValidation(value);
-            errors.push(...customErrors)
+            const customErrors = props?.validate?.[name!]?.customValidation?.(value);
+            errors.push(...customErrors!)
         }
 
-        if(type === 'email' && required){
+        if(type === 'email'){
             const email = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+            let message = '';
             if(!email.test(value)){
-                errors.push("this field must be a valid email")
+                message = "this field must be a valid email"
+            }
+
+            if(required && message){
+                errors.push(message)
+            }else if(value.length>0 && message){
+                errors.push(message)
             }
         }
 
@@ -117,11 +124,14 @@ export function useFormValidate(props?: FormValidateProps){
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
+    const formHasError = Object.keys(errors).some(key=>errors[key].errors.length>0)
+
     return {
         inputChange,
         errors,
         formRef,
-        data
+        data,
+        formHasError
     }
 }
 
